@@ -42,10 +42,27 @@ jobs:
 
       - name: Run dbt-review agent
         run: |
+          set +e
           cortex --print "Use the dbt-review agent to review the changes in this PR" \
-            > review.md 2>/dev/null || true
-            echo "----- review.md -----"; cat review.md
-
+            > review.md 2> cortex-error.log
+          status=$?
+          set -e
+          echo "cortex exit code: $status"
+          echo "----- cortex-error.log -----"; cat cortex-error.log
+          echo "----- review.md -----"; cat review.md
+          # Never post a blank comment: fall back to the error details.
+          if [ ! -s review.md ] || ! grep -q '[^[:space:]]' review.md; then
+            {
+              echo "## dbt-review did not produce output"
+              echo
+              echo "\`cortex\` exited with code $status. Error output:"
+              echo
+              echo '```'
+              tail -n 50 cortex-error.log
+              echo '```'
+            } > review.md
+          fi
+          
       - name: Post review comment
         if: github.event_name == 'pull_request'
         env:
