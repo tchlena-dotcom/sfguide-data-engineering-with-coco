@@ -1,0 +1,11 @@
+{
+  "name": "coco-de-guide",
+  "version": "1.0.0",
+  "description": "Data engineering workflow for the TPC-H dbt project: skills, subagents, and hooks.",
+  "author": {
+    "name": "EB"
+  },
+  "skills": ["./skills"],
+  "agents": "./agents",
+  "hooks": "./hooks/hooks.json"
+}
