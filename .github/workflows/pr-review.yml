@@ -44,6 +44,7 @@ jobs:
         run: |
           cortex --print "Use the dbt-review agent to review the changes in this PR" \
             > review.md 2>/dev/null || true
+            echo "----- review.md -----"; cat review.md
 
       - name: Post review comment
         if: github.event_name == 'pull_request'
